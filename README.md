@@ -1,4 +1,4 @@
-# Terraform Tests - Azure GitHub Action
+# Terraform Tests - GitHub Action (Azure)
 
 [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/)
 
