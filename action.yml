@@ -147,6 +147,7 @@ runs:
         arm_use_oidc: ${{ inputs.arm_use_oidc }}
         arm_use_azuread: ${{ inputs.arm_use_azuread }}
         arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
         github_token: ${{ inputs.github_token }}
     
     - name: Terraform Plan -> Apply -> Destroy (Apply)
