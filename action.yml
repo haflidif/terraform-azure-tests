@@ -97,7 +97,7 @@ runs:
   steps:
     - name: Terraform Plan Only
       if: ${{ contains(inputs.test_type, 'plan') }} || contains(inputs.test_type, 'apply') || ${{ contains(inputs.test_type, 'destroy') }}
-      uses: haflidif/terraform-azure-plan@main
+      uses: haflidif/terraform-azure-plan@v1.0.0
       id: plan-only
       with:
         path: ${{ inputs.path }}
@@ -116,7 +116,7 @@ runs:
 
     - name: Terraform Plan -> Apply
       if: ${{ contains(inputs.test_type, 'apply') || contains(inputs.test_type, 'destroy') }}
-      uses: haflidif/terraform-azure-apply@main
+      uses: haflidif/terraform-azure-apply@v1.0.0
       id: apply
       with:
         tf_version: ${{ inputs.tf_version }}
@@ -132,7 +132,7 @@ runs:
 
     - name: Terraform Plan -> Apply -> Destroy (Plan)
       if: ${{ contains(inputs.test_type, 'destroy') }}
-      uses: haflidif/terraform-azure-plan@main
+      uses: haflidif/terraform-azure-plan@v1.0.0
       id: destroy-plan
       with:
         path: ${{ inputs.path }}
@@ -152,7 +152,7 @@ runs:
     
     - name: Terraform Plan -> Apply -> Destroy (Apply)
       if: ${{ contains(inputs.test_type, 'destroy') }}
-      uses: haflidif/terraform-azure-apply@main
+      uses: haflidif/terraform-azure-apply@v1.0.0
       with:
         plan_mode: 'destroy'
         tf_version: ${{ inputs.tf_version }}
