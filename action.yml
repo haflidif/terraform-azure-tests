@@ -97,7 +97,7 @@ runs:
   steps:
     - name: Terraform Plan Only
       if: ${{ contains(inputs.test_type, 'plan') }} || contains(inputs.test_type, 'apply') || ${{ contains(inputs.test_type, 'destroy') }}
-      uses: haflidif/terraform-azure-plan@v1.0.0
+      uses: haflidif/terraform-azure-plan@bugfix/3-missing-github-token
       id: plan-only
       with:
         path: ${{ inputs.path }}
@@ -132,7 +132,7 @@ runs:
 
     - name: Terraform Plan -> Apply -> Destroy (Plan)
       if: ${{ contains(inputs.test_type, 'destroy') }}
-      uses: haflidif/terraform-azure-plan@v1.0.0
+      uses: haflidif/terraform-azure-plan@bugfix/3-missing-github-token
       id: destroy-plan
       with:
         path: ${{ inputs.path }}
