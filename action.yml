@@ -88,10 +88,9 @@ inputs:
   
   # Github Token, to use with PR Commenter.
   github_token:
-    description: '(Optional) The GitHub token to use for posting comments on pull requests. Defaults to `${{ github.token }}`.'
+    description: '(Required) The GitHub token to use for posting comments on pull requests, please specify a valid GitHub token.'
     type: string
-    required: false
-    default: '${{ secrets.GITHUB_TOKEN }}'
+    required: true
 
 branding:
   icon: 'check'
