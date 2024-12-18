@@ -48,12 +48,7 @@ inputs:
     description: '(Required) The name of the Azure Storage Container to use for the remote backend.'
     type: string
     required: true
-  
-  az_storage_key:
-    description: '(Required) The key to use for the remote backend.'
-    type: string
-    required: true
-  
+    
   # Azure ARM Inputs
 
   arm_client_id:
@@ -112,7 +107,6 @@ runs:
         az_resource_group: ${{ inputs.az_resource_group }}
         az_storage_account_name: ${{ inputs.az_storage_account_name }}
         az_storage_container_name: ${{ inputs.az_storage_container_name }}
-        az_storage_key: ${{ inputs.az_storage_key }}
         arm_client_id: ${{ inputs.arm_client_id }}
         arm_use_oidc: ${{ inputs.arm_use_oidc }}
         arm_use_azuread: ${{ inputs.arm_use_azuread }}
@@ -130,7 +124,6 @@ runs:
         az_resource_group: ${{ inputs.az_resource_group }}
         az_storage_account_name: ${{ inputs.az_storage_account_name }}
         az_storage_container_name: ${{ inputs.az_storage_container_name }}
-        az_storage_key: ${{ inputs.az_storage_key }}
         arm_client_id: ${{ inputs.arm_client_id }}
         arm_use_oidc: ${{ inputs.arm_use_oidc }}
         arm_use_azuread: ${{ inputs.arm_use_azuread }}
@@ -150,7 +143,6 @@ runs:
         az_resource_group: ${{ inputs.az_resource_group }}
         az_storage_account_name: ${{ inputs.az_storage_account_name }}
         az_storage_container_name: ${{ inputs.az_storage_container_name }}
-        az_storage_key: ${{ inputs.az_storage_key }}
         arm_client_id: ${{ inputs.arm_client_id }}
         arm_use_oidc: ${{ inputs.arm_use_oidc }}
         arm_use_azuread: ${{ inputs.arm_use_azuread }}
@@ -167,7 +159,6 @@ runs:
         az_resource_group: ${{ inputs.az_resource_group }}
         az_storage_account_name: ${{ inputs.az_storage_account_name }}
         az_storage_container_name: ${{ inputs.az_storage_container_name }}
-        az_storage_key: ${{ inputs.az_storage_key }}
         arm_client_id: ${{ inputs.arm_client_id }}
         arm_use_oidc: ${{ inputs.arm_use_oidc }}
         arm_use_azuread: ${{ inputs.arm_use_azuread }}
