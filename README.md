@@ -2,7 +2,7 @@
 
 [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/)
 
-This GitHub Action runs tests against Terraform code/modules using an Azure Remote Backend.
+This GitHub Action facilitates testing of Terraform code/modules using an Azure Remote Backend. It leverages the [haflidif/terraform-azure-plan](https://github.com/haflidif/terraform-azure-plan) and [haflidif/terraform-azure-apply](https://github.com/haflidif/terraform-azure-apply) GitHub Actions to execute `terraform plan` and `terraform apply` commands. Depending on the specified mode, it can perform `terraform plan` or `terraform apply` operations in either `deploy` or `destroy` mode, enabling comprehensive end-to-end testing of your Terraform configurations.
 
 ## Inputs
 
