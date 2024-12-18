@@ -1,0 +1,176 @@
+name: 'Terraform Tests - Azure'
+description: 'Run tests against Terraform Code/Modules using Azure Backend'
+
+inputs:
+  path:
+    description: '(Optional) Path to the Terraform configuration files, defaults to the current working directory'
+    required: false
+    default: .
+
+  test_type:
+    description: '(Required) Specify a test type, validate options are `plan`, `plan-apply`, `plan-apply-destroy`. Defaults to `plan`.'
+    required: true
+    type: string
+    default: 'plan'
+  
+# Terraform Inputs
+
+  tf_version:
+    description: '(Optional) The version of Terraform to use. Defaults to the latest version.'
+    type: string
+    required: false
+    default: 'latest'
+    
+  tf_var_file:
+    description: '(Optional) The variable file to use. Defaults to `terraform.tfvars`.'
+    type: string
+    required: false
+    default: 'terraform.tfvars'
+   
+  tf_state_file:
+    description: '(Optional) The state file to use. Defaults to `terraform.tfstate`.'
+    type: string
+    required: false
+    default: 'terraform.tfstate'
+  
+  # Azure Remote Backend Resource Inputs
+  az_resource_group:
+    description: '(Required) The name of the Azure Resource Group to use for the remote backend.'
+    type: string
+    required: true
+
+  az_storage_account_name:
+    description: '(Required) The name of the Azure Storage Account to use for the remote backend.'
+    type: string
+    required: true
+  
+  az_storage_container_name:
+    description: '(Required) The name of the Azure Storage Container to use for the remote backend.'
+    type: string
+    required: true
+  
+  az_storage_key:
+    description: '(Required) The key to use for the remote backend.'
+    type: string
+    required: true
+  
+  # Azure ARM Inputs
+
+  arm_client_id:
+    description: '(Required) The client ID of the `Azure Service Principal` or `User Assigned Managed Identity` to use for authentication.'
+    type: string
+    required: true
+  
+  arm_use_oidc:
+    description: '(Optional) Whether to use OIDC for authentication. Defaults to `false`.'
+    required: false
+    type: boolean
+    default: true
+  
+  arm_use_azuread:
+    description: | 
+      (Optional) Whether to use Azure AD for authentication towards Azure Remote Backend Storage Account and Containers.
+      Requires RBAC permissions `Storage Blob Data Owner` or `Storage Blob Data Contributor` on the Storage Account/Container for the identity being used.
+      Defaults to `false`.
+    required: false
+    type: boolean
+    default: true
+  
+  arm_tenant_id:
+    description: '(Required) The tenant ID of the Azure Service Principal to use for authentication.'
+    type: string
+    required: true
+  
+  arm_subscription_id:
+    description: '(Required) The subscription ID of the Azure Service Principal to use for authentication.'
+    type: string
+    required: true
+  
+  # Github Token, to use with PR Commenter.
+  github_token:
+    description: '(Optional) The GitHub token to use for posting comments on pull requests. Defaults to `${{ github.token }}`.'
+    type: string
+    required: false
+    default: '${{ github.token }}'
+
+branding:
+  icon: 'check'
+  color: 'blue'
+
+runs:
+  using: composite
+
+  steps:
+    - name: Terraform Plan Only
+      if: ${{ contains(inputs.test_type, 'plan') }} || contains(inputs.test_type, 'apply') || ${{ contains(inputs.test_type, 'destroy') }}
+      uses: haflidif/terraform-azure-plan@main
+      id: plan-only
+      with:
+        path: ${{ inputs.path }}
+        tf_version: ${{ inputs.tf_version }}
+        tf_var_file: ${{ inputs.tf_var_file }}
+        tf_state_file: ${{ inputs.tf_state_file }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_account_name: ${{ inputs.az_storage_account_name }}
+        az_storage_container_name: ${{ inputs.az_storage_container_name }}
+        az_storage_key: ${{ inputs.az_storage_key }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_use_oidc: ${{ inputs.arm_use_oidc }}
+        arm_use_azuread: ${{ inputs.arm_use_azuread }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
+        github_token: ${{ inputs.github_token }}
+
+    - name: Terraform Plan -> Apply
+      if: ${{ contains(inputs.test_type, 'apply') || contains(inputs.test_type, 'destroy') }}
+      uses: haflidif/terraform-azure-apply@main
+      id: apply
+      with:
+        tf_version: ${{ inputs.tf_version }}
+        tf_state_file: ${{ inputs.tf_state_file }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_account_name: ${{ inputs.az_storage_account_name }}
+        az_storage_container_name: ${{ inputs.az_storage_container_name }}
+        az_storage_key: ${{ inputs.az_storage_key }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_use_oidc: ${{ inputs.arm_use_oidc }}
+        arm_use_azuread: ${{ inputs.arm_use_azuread }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
+
+    - name: Terraform Plan -> Apply -> Destroy (Plan)
+      if: ${{ contains(inputs.test_type, 'destroy') }}
+      uses: haflidif/terraform-azure-plan@main
+      id: destroy-plan
+      with:
+        path: ${{ inputs.path }}
+        plan_mode: 'destroy'
+        tf_version: ${{ inputs.tf_version }}
+        tf_var_file: ${{ inputs.tf_var_file }}
+        tf_state_file: ${{ inputs.tf_state_file }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_account_name: ${{ inputs.az_storage_account_name }}
+        az_storage_container_name: ${{ inputs.az_storage_container_name }}
+        az_storage_key: ${{ inputs.az_storage_key }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_use_oidc: ${{ inputs.arm_use_oidc }}
+        arm_use_azuread: ${{ inputs.arm_use_azuread }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        github_token: ${{ inputs.github_token }}
+    
+    - name: Terraform Plan -> Apply -> Destroy (Apply)
+      if: ${{ contains(inputs.test_type, 'destroy') }}
+      uses: haflidif/terraform-azure-apply@main
+      with:
+        plan_mode: 'destroy'
+        tf_version: ${{ inputs.tf_version }}
+        tf_state_file: ${{ inputs.tf_state_file }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_account_name: ${{ inputs.az_storage_account_name }}
+        az_storage_container_name: ${{ inputs.az_storage_container_name }}
+        az_storage_key: ${{ inputs.az_storage_key }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_use_oidc: ${{ inputs.arm_use_oidc }}
+        arm_use_azuread: ${{ inputs.arm_use_azuread }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
