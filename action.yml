@@ -91,7 +91,7 @@ inputs:
     description: '(Optional) The GitHub token to use for posting comments on pull requests. Defaults to `${{ github.token }}`.'
     type: string
     required: false
-    default: '${{ github.token }}'
+    default: '${{ secrets.GITHUB_TOKEN }}'
 
 branding:
   icon: 'check'
